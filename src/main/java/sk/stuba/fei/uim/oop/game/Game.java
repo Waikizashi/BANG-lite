@@ -8,6 +8,7 @@ import sk.stuba.fei.uim.oop.cards.Card;
 import sk.stuba.fei.uim.oop.cards.blue.BlueCard;
 import sk.stuba.fei.uim.oop.cards.blue.cardImpl.Barrel;
 import sk.stuba.fei.uim.oop.cards.blue.cardImpl.Dynamite;
+import sk.stuba.fei.uim.oop.cards.blue.cardImpl.Prison;
 import sk.stuba.fei.uim.oop.cards.brown.BrownCard;
 import sk.stuba.fei.uim.oop.cards.brown.cardImpl.Missed;
 
@@ -29,11 +30,9 @@ public class Game {
 
     public void startGame() {
 
-        // System.out.println("Enter the number of players (2-4): ");
         int numberOfPlayers = readInt("Enter the number of players (2-4): ");
 
         for (int i = 0; i < numberOfPlayers; i++) {
-            // System.out.println("Enter the name for player " + (i + 1) + ":");
             String playerName = readString("Enter the name for player " + (i + 1) + ":");
             Player player = new Player(playerName);
             players.add(player);
@@ -48,36 +47,25 @@ public class Game {
             System.out.println("It's " + currentPlayer.getName() + "'s turn!");
             checkDynamite(currentPlayer);
 
-            // turn start
             currentPlayer.addCardToHand(deck.draw());
             currentPlayer.addCardToHand(deck.draw());
 
-            // perform actions with the cards
-            boolean playerPassed = false;
+            boolean playerPassed = checkPrison(currentPlayer);
             boolean atListOneCardIsPlayed = false;
 
             while (!playerPassed && currentPlayer.getHand().size() > 0) {
                 System.out.println(currentPlayer.getName() + "'s hand: ");
                 currentPlayer.getHand().stream().forEach(item -> System.out.println(item + "\n"));
-                // System.out.println("Choose a card to play by index (0-" +
-                // (currentPlayer.getHand().size() - 1)
-                // + "), or enter something else to pass:");
                 int chosenCardIndex = readInt(
                         "Choose a card to play by index (0-" + (currentPlayer.getHand().size() - 1)
                                 + "), or enter something else to pass:");
-                // add checking played cards
                 if (chosenCardIndex >= 0 && chosenCardIndex < currentPlayer.getHand().size()) {
-                    // checkup is last card is "MissedCard"
-                    // checkup is last card is "Barrel" but it has already played
                     Card chosenCard = currentPlayer.getCardFromHand(chosenCardIndex);
                     var cardPlayed = false;
-
-                    // move before removing to check if the card was played
                     if (chosenCard instanceof BrownCard) {
                         cardPlayed = ((BrownCard) chosenCard).performAction(currentPlayer, this);
                     } else if (chosenCard instanceof BlueCard) {
                         cardPlayed = ((BlueCard) chosenCard).performAction(currentPlayer, this);
-                        // currentPlayer.addCardToTable((BlueCard) chosenCard);
                     }
 
                     if (cardPlayed) {
@@ -99,16 +87,13 @@ public class Game {
 
             currentPlayer.discardExcessCards(deck);
 
-            // move to the next player
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         }
-        // System.out.println("GAME OVER!" + " PLAYER ::: " + players.get(0).getName() +
-        // " ::: WINS!");
         printWinner(players.get(0));
     }
 
     public boolean isGameOver() {
-        return players.size() <= 1; // add logic for removing players from this list when they have no lives
+        return players.size() <= 1;
     }
 
     public void removeDeadPlayer(Player deadPlayer) {
@@ -146,6 +131,28 @@ public class Game {
         return players;
     }
 
+    public boolean checkPrison(Player currentPlayer) {
+        Prison prisonCard = (Prison) currentPlayer.findCardOnTable(Prison.class);
+
+        if (prisonCard != null) {
+            boolean escaped = prisonCard.escape();
+
+            if (escaped) {
+                System.out.println(" Player " + currentPlayer.getName() + " escape from prison!");
+            } else {
+                System.out.println(" failed to escape from prison and player " + currentPlayer.getName()
+                        + " skips turn.");
+            }
+
+            currentPlayer.removeCardFromTable(prisonCard);
+            deck.discard(prisonCard);
+
+            return !escaped;
+        }
+
+        return false;
+    }
+
     public void checkDynamite(Player currentPlayer) {
         Dynamite dynamiteCard = (Dynamite) currentPlayer.findCardInHand(Dynamite.class);
 
@@ -170,20 +177,16 @@ public class Game {
     }
 
     private Player getPreviousPlayer(Player currentPlayer) {
-        // Find the index of the current player in the players list
         int currentIndex = players.indexOf(currentPlayer);
 
-        // If the current player is not found in the list, return null
         if (currentIndex == -1) {
             return null;
         }
-        // Calculate the index of the previous player, wrapping around if necessary
         int previousIndex = (currentIndex - 1 + players.size()) % players.size();
 
         if (previousIndex < 0) {
             previousIndex = players.size() - 1;
         }
-        // Return the previous player
         return players.get(previousIndex);
     }
 
@@ -199,8 +202,6 @@ public class Game {
         int chosenPlayerIndex = -1;
 
         while (chosenPlayerIndex < 0 || chosenPlayerIndex >= availablePlayers.size()) {
-            // System.out.print("Enter the index of the target player (0-" +
-            // (availablePlayers.size() - 1) + "): ");
             chosenPlayerIndex = getIntAnswer(availablePlayers.size() - 1);
         }
 
@@ -236,15 +237,13 @@ public class Game {
         if (barrelCard != null) {
             bangAvoided = handleBarrel(targetPlayer);
         }
-        // if the target player does not have a Barrel card or the handleBarrel false
         if (!bangAvoided) {
             Card missedCard = targetPlayer.findCardInHand(Missed.class);
             if (missedCard != null) {
                 bangAvoided = playMissed(targetPlayer);
             }
         }
-        // if the target player doest have a Missed card or the playMissed returns false
-        return bangAvoided;// chekup logic
+        return bangAvoided;
     }
 
     public boolean chooseHandOrTable(Player targetPlayer) {
@@ -252,8 +251,6 @@ public class Game {
         boolean answer = false;
 
         while (!choice.equalsIgnoreCase("hand") && !choice.equalsIgnoreCase("table")) {
-            // System.out.println("Choose between target player's hand or table (type 'hand'
-            // or 'table'):");
             choice = getStringAnswer();
 
             if (!choice.equalsIgnoreCase("hand") && !choice.equalsIgnoreCase("table")) {

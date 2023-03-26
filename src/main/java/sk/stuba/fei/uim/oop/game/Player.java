@@ -16,7 +16,7 @@ public class Player {
 
     public Player(String name) {
         this.name = name;
-        lives = 10;
+        lives = 4;
         hand = new ArrayList<>();
         cardsOnTable = new ArrayList<>();
         random = new Random();

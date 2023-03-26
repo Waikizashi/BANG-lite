@@ -26,8 +26,6 @@ public class Dynamite extends BlueCard {
         currentPlayer.addCardToTable(this);
 
         System.out.println("Dynamite detected!!!");
-        // change adding to prevPlayer
-        // add using getPrevPlayer
         return false;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Deck {
     private List<Card> deck;
-    private List<Card> discardPile; // remove static potomusto dolbojeb
+    private List<Card> discardPile;
 
     public Deck() {
         deck = new ArrayList<>();
@@ -69,17 +69,7 @@ public class Deck {
         return deck.remove(0);
     }
 
-    // public Card draw() {
-    // if (!deck.isEmpty()) {
-    // Card drawnCard = deck.get(0);
-    // deck.remove(0);
-    // return drawnCard;
-    // }
-
-    // return null; // Deck is empty
-    // }
-
-    public void discard(Card card) { // same remove static, add object to Game
+    public void discard(Card card) {
         discardPile.add(card);
     }
 

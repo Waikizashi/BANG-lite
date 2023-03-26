@@ -22,11 +22,9 @@ public class Stagecoach extends BrownCard {
             currentPlayer.addCardToHand(drawnCard1);
             currentPlayer.addCardToHand(drawnCard2);
             System.out.println("The current player drew two cards using the Stagecoach card!");
-            // return true; //another logic of removing card
         } else {
             System.out.println("There are not enough cards left in the deck!");
-            // return false; //another logic of removing card
         }
-        return true; // another one logic of removing card
+        return true;
     }
 }
