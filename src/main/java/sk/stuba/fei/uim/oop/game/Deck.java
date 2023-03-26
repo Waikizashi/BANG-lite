@@ -82,4 +82,8 @@ public class Deck {
     public void discard(Card card) { // same remove static, add object to Game
         discardPile.add(card);
     }
+
+    public void discardAll(List<Card> cards) {
+        discardPile.addAll(cards);
+    }
 }

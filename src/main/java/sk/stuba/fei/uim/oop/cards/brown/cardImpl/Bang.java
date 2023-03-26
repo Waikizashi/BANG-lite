@@ -22,7 +22,7 @@ public class Bang extends BrownCard {
                 System.out.println("The target player avoided the Bang using a Missed card!");
             } else {
                 System.out.println("The target player was hit by the Bang and lost a life!");
-                targetPlayer.reduceLife(1);
+                targetPlayer.reduceLife(1, game);
             }
             return true;
         }

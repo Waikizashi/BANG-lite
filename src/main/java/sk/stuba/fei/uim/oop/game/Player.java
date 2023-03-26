@@ -12,12 +12,15 @@ public class Player {
     private int lives;
     private List<Card> hand;
     private List<BlueCard> cardsOnTable;
+    private Random random;
 
     public Player(String name) {
         this.name = name;
-        this.lives = 4;
-        this.hand = new ArrayList<>();
-        this.cardsOnTable = new ArrayList<>();
+        lives = 10;
+        hand = new ArrayList<>();
+        cardsOnTable = new ArrayList<>();
+        random = new Random();
+
     }
 
     public String getName() {
@@ -32,7 +35,7 @@ public class Player {
         this.lives = lives;
     }
 
-    public void reduceLife(int amount) {
+    public void reduceLife(int amount, Game game) {
         lives -= amount;
 
         if (lives <= 0) {
@@ -40,7 +43,8 @@ public class Player {
             // add call a method to handle the player s death
             // game.handleDead or some return to call it
             lives = 0;
-            System.out.println("Player - " + this.name + " is dead!");
+            System.out.println("Player - " + this.name + " lost his last life and now he is dead!");
+            game.removeDeadPlayer(this);
         }
 
         System.out.println("Player - " + this.name + " now has: " + lives + " lives");
@@ -48,6 +52,10 @@ public class Player {
 
     public List<Card> getHand() {
         return hand;
+    }
+
+    public List<? extends Card> getTable() {
+        return cardsOnTable;
     }
 
     // public void drawCards(Deck deck, int numCards) {
@@ -101,6 +109,10 @@ public class Player {
         // }
     }
 
+    public boolean removeCardFromTable(Card cardToRemove) {
+        return cardsOnTable.remove(cardToRemove);
+    }
+
     public Card findCardInHand(Class<?> cardClass) {
         for (Card card : hand) {
             if (cardClass.isInstance(card)) {
@@ -137,8 +149,6 @@ public class Player {
         }
     }
 
-    private static final Random random = new Random();
-
     public Card discardRandomCardFromHand() {
         if (hand.isEmpty()) {
             return null;
@@ -170,7 +180,6 @@ public class Player {
 
     public void discardExcessCards(Deck deck) {
         while (hand.size() > lives) {
-            Random random = new Random();
             int randomCardIndex = random.nextInt(hand.size());
             Card discardedCard = hand.remove(randomCardIndex);
             deck.discard(discardedCard); // remove static

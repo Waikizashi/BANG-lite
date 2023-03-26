@@ -1,5 +1,8 @@
 package sk.stuba.fei.uim.oop.cards.brown.cardImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sk.stuba.fei.uim.oop.cards.brown.BrownCard;
 import sk.stuba.fei.uim.oop.game.Game;
 import sk.stuba.fei.uim.oop.game.Player;
@@ -14,13 +17,14 @@ public class Indians extends BrownCard {
 
     @Override
     public boolean performAction(Player currentPlayer, Game game) {
-        for (Player targetPlayer : game.getPlayers()) {
+        List<Player> playersCopy = new ArrayList<>(game.getPlayers());
+        for (Player targetPlayer : playersCopy) {
             if (!targetPlayer.equals(currentPlayer)) {
                 System.out.println("Indian attack on player: " + targetPlayer.getName());
                 if (game.playBang(targetPlayer)) {
                     System.out.println("The target player used a Bang card to defend against the Indian attack!");
                 } else {
-                    targetPlayer.reduceLife(1);
+                    targetPlayer.reduceLife(1, game);
                     System.out.println("The target player couldn't defend against the Indian attack and lost a life!");
                 }
             }

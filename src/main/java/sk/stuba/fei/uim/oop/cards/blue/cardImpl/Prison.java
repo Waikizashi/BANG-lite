@@ -8,13 +8,14 @@ import java.util.Random;
 public class Prison extends BlueCard {
     private static final String NAME = "Prison";
     private static final String DESCRIPTION = "Traps a player with a 1 in 4 chance of escaping. If they fail to escape, they skip their turn.";
+    private Random random;
 
     public Prison() {
         super(NAME, DESCRIPTION);
+        random = new Random();
     }
 
     public boolean escape() {
-        Random random = new Random();
         int chance = random.nextInt(4);
         return chance == 0;
     }
