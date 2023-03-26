@@ -22,6 +22,6 @@ public class Dynamite extends BlueCard {
 
     @Override
     public void performAction(Player currentPlayer, Game game) {
-        currentPlayer.addBlueCardToPlay(this);
+        currentPlayer.addCardToTable(this);
     }
 }

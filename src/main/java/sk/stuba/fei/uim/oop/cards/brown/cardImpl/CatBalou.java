@@ -25,7 +25,6 @@ public class CatBalou extends BrownCard {
                 BlueCard discardedCard = (BlueCard) targetPlayer.discardRandomCardFromTable();
                 System.out.println("Discarded card from the target player's table: "
                         + ((discardedCard != null) ? discardedCard.getName() : "No cards available"));
-                //
             }
         }
     }

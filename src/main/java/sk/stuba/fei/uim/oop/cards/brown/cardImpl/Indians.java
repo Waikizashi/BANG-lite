@@ -20,7 +20,7 @@ public class Indians extends BrownCard {
                 if (game.playBang(targetPlayer)) {
                     System.out.println("The target player used a Bang card to defend against the Indian attack!");
                 } else {
-                    targetPlayer.setLives(targetPlayer.getLives() - 1);
+                    targetPlayer.reduceLife(1);
                     System.out.println("The target player couldn't defend against the Indian attack and lost a life!");
                 }
             }

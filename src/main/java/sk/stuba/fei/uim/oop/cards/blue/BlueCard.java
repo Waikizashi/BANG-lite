@@ -6,6 +6,4 @@ public abstract class BlueCard extends Card {
     public BlueCard(String name, String description) {
         super(name, description);
     }
-
-    // Implement methods specific to BlueCard here, if any
 }

@@ -6,6 +6,4 @@ public abstract class BrownCard extends Card {
     public BrownCard(String name, String description) {
         super(name, description);
     }
-
-    // Implement methods specific to BrownCard here, if any
 }

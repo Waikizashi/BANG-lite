@@ -16,5 +16,6 @@ public class Beer extends BrownCard {
     public void performAction(Player currentPlayer, Game game) {
         currentPlayer.setLives(currentPlayer.getLives() + 1);
         System.out.println("The current player gained one life by using a Beer card!");
+        System.out.println("Player - " + currentPlayer.getName() + " now has: " + currentPlayer.getLives() + " lives");
     }
 }

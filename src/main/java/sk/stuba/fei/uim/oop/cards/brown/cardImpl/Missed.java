@@ -14,9 +14,5 @@ public class Missed extends BrownCard {
 
     @Override
     public void performAction(Player currentPlayer, Game game) {
-        // The action of the Missed card is handled by the Game class when a player is
-        // targeted by a Bang card.
-        // No action is needed here, as the card is played automatically in response to
-        // a Bang card.
     }
 }

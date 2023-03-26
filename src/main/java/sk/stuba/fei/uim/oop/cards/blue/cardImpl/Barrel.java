@@ -22,6 +22,6 @@ public class Barrel extends BlueCard {
 
     @Override
     public void performAction(Player currentPlayer, Game game) {
-        currentPlayer.addBlueCardToPlay(this); // change to addNlueCardOnTable
+        currentPlayer.addCardToTable(this);
     }
 }

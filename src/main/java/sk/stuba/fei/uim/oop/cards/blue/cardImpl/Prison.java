@@ -23,7 +23,7 @@ public class Prison extends BlueCard {
     public void performAction(Player currentPlayer, Game game) {
         Player targetPlayer = game.chooseTargetPlayer(currentPlayer);
         if (targetPlayer != null) {
-            targetPlayer.addBlueCardToPlay(this);
+            targetPlayer.addCardToTable(this);
         }
     }
 }

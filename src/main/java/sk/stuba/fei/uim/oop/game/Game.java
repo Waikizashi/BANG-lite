@@ -1,19 +1,18 @@
 package sk.stuba.fei.uim.oop.game;
 
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 import sk.stuba.fei.uim.oop.cards.Card;
 import sk.stuba.fei.uim.oop.cards.blue.BlueCard;
 import sk.stuba.fei.uim.oop.cards.blue.cardImpl.Barrel;
 import sk.stuba.fei.uim.oop.cards.blue.cardImpl.Dynamite;
-import sk.stuba.fei.uim.oop.cards.blue.cardImpl.Prison;
 import sk.stuba.fei.uim.oop.cards.brown.BrownCard;
-import sk.stuba.fei.uim.oop.cards.brown.cardImpl.Bang;
 import sk.stuba.fei.uim.oop.cards.brown.cardImpl.Missed;
+
+import static sk.stuba.fei.uim.oop.utility.KeyboardInput.readInt;
+import static sk.stuba.fei.uim.oop.utility.KeyboardInput.readString;;
 
 public class Game {
     private Deck deck;
@@ -27,20 +26,18 @@ public class Game {
     }
 
     public void startGame() {
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter the number of players (2-4): ");
-        int numberOfPlayers = scanner.nextInt();
+        int numberOfPlayers = readInt();
 
         for (int i = 0; i < numberOfPlayers; i++) {
             System.out.println("Enter the name for player " + (i + 1) + ":");
-            String playerName = scanner.next();
+            String playerName = readString();
             Player player = new Player(playerName);
             players.add(player);
 
-            // Draw initial 4 cards for each player
             for (int j = 0; j < 4; j++) {
-                player.addCardToHand(deck.drawCard());
+                player.addCardToHand(deck.draw());
             }
         }
 
@@ -48,24 +45,27 @@ public class Game {
             Player currentPlayer = players.get(currentPlayerIndex);
             System.out.println("It's " + currentPlayer.getName() + "'s turn!");
 
-            // Draw 2 cards at the beginning of the turn
-            currentPlayer.addCardToHand(deck.drawCard());
-            currentPlayer.addCardToHand(deck.drawCard());
+            currentPlayer.addCardToHand(deck.draw());
+            currentPlayer.addCardToHand(deck.draw());
 
-            // Perform actions with the cards
+            // perform actions with the cards
             boolean playerPassed = false;
             while (!playerPassed && currentPlayer.getHand().size() > 0) {
 
                 System.out.println(currentPlayer.getName() + "'s hand: ");
                 currentPlayer.getHand().stream().forEach(item -> System.out.println(item + "\n"));
                 System.out.println("Choose a card to play by index (0-" + (currentPlayer.getHand().size() - 1)
-                        + "), or enter -1 to pass:");
-                int chosenCardIndex = scanner.nextInt();
+                        + "), or enter something else to pass:");
+                int chosenCardIndex = readInt();
                 // add checking played cards
                 if (chosenCardIndex >= 0 && chosenCardIndex < currentPlayer.getHand().size()) {
+                    // checkup is last card is "MissedCard"
+                    // checkup is last card is "Barrel" but it has already played
                     Card chosenCard = currentPlayer.getCardFromHand(chosenCardIndex);
+                    var cardPlayed = false;
                     currentPlayer.removeCardFromHand(chosenCardIndex);
 
+                    // move before removing to check if the card was played
                     if (chosenCard instanceof BrownCard) {
                         ((BrownCard) chosenCard).performAction(currentPlayer, this);
                     } else if (chosenCard instanceof BlueCard) {
@@ -76,10 +76,9 @@ public class Game {
                 }
             }
 
-            // Discard excess cards
             currentPlayer.discardExcessCards();
 
-            // Move to the next player
+            // move to the next player
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         }
 
@@ -87,11 +86,11 @@ public class Game {
     }
 
     public boolean isGameOver() {
-        return players.size() <= 1; // add logic for remove players from this list
+        return players.size() <= 1; // add logic for removing players from this list when they have no lives
     }
 
     public Card drawCard() {
-        return deck.drawCard();
+        return deck.draw();
     }
 
     public List<Player> getPlayers() {
@@ -107,12 +106,11 @@ public class Game {
             System.out.println(i + ": " + availablePlayers.get(i).getName());
         }
 
-        Scanner scanner = new Scanner(System.in);
         int chosenPlayerIndex = -1;
 
         while (chosenPlayerIndex < 0 || chosenPlayerIndex >= availablePlayers.size()) {
             System.out.print("Enter the index of the target player (0-" + (availablePlayers.size() - 1) + "): ");
-            chosenPlayerIndex = scanner.nextInt();
+            chosenPlayerIndex = readInt();
         }
 
         return availablePlayers.get(chosenPlayerIndex);
@@ -123,14 +121,12 @@ public class Game {
 
         if (barrelCard != null) {
             Random random = new Random();
-            int barrelEffectChance = random.nextInt(4); // A 1 in 4 chance
-            return barrelEffectChance == 0; // The Barrel effect activates if the random number is 0
+            int barrelEffectChance = random.nextInt(4);
+            return barrelEffectChance == 0;
         }
 
-        return false; // No Barrel card found, the attack is not avoided
+        return false;
     }
-
-    // private List<BrownCard> discardPile;
 
     public boolean playMissed(Player targetPlayer) {
         BrownCard missedCard = (BrownCard) targetPlayer.findCardInHand(Missed.class);
@@ -138,40 +134,32 @@ public class Game {
         if (missedCard != null) {
             targetPlayer.removeCardFromHand(missedCard);
             Deck.discard(missedCard);
-            return true; // Missed card was played
+            return true;
         }
 
-        return false; // No Missed card found in the target player's hand
+        return false;
     }
 
     public boolean playBang(Player targetPlayer) {
         boolean bangAvoided = false;
 
-        // Check if the target player has a Barrel card on the table
         Card barrelCard = targetPlayer.findCardOnTable(Barrel.class);
         if (barrelCard != null) {
-            // If the target player has a Barrel card, call the handleBarrel method
             bangAvoided = handleBarrel(targetPlayer);
         }
 
-        // If the target player does not have a Barrel card or the handleBarrel method
-        // returns false
+        // if the target player does not have a Barrel card or the handleBarrel false
         if (!bangAvoided) {
-            // Check if the target player has a Missed card in their hand
             Card missedCard = targetPlayer.findCardInHand(Missed.class);
             if (missedCard != null) {
-                // If the target player has a Missed card, call the playMissed method
                 bangAvoided = playMissed(targetPlayer);
             }
         }
 
-        // If the target player does not have a Missed card or the playMissed method
-        // returns false
+        // if the target player doest have a Missed card or the playMissed returns false
         return bangAvoided;// chekup logic
 
     }
-
-    private static final Scanner scanner = new Scanner(System.in);
 
     public boolean chooseHandOrTable(Player targetPlayer) {
         String choice = "";
@@ -179,7 +167,7 @@ public class Game {
 
         while (!choice.equalsIgnoreCase("hand") && !choice.equalsIgnoreCase("table")) {
             System.out.println("Choose between target player's hand or table (type 'hand' or 'table'):");
-            choice = scanner.nextLine().trim().toLowerCase();
+            choice = readString();
 
             if (!choice.equalsIgnoreCase("hand") && !choice.equalsIgnoreCase("table")) {
                 System.out.println("Invalid input. Please type 'hand' or 'table'.");
@@ -192,6 +180,4 @@ public class Game {
 
         return answer;
     }
-    // Add other methods needed for the card actions, such as
-    // playBang, chooseHandOrTable, etc.
 }
