@@ -39,9 +39,6 @@ public class Player {
         lives -= amount;
 
         if (lives <= 0) {
-            // set the player s lives to 0
-            // add call a method to handle the player s death
-            // game.handleDead or some return to call it
             lives = 0;
             System.out.println("Player - " + this.name + " lost his last life and now he is dead!");
             game.removeDeadPlayer(this);
@@ -58,12 +55,6 @@ public class Player {
         return cardsOnTable;
     }
 
-    // public void drawCards(Deck deck, int numCards) {
-    // for (int i = 0; i < numCards; i++) {
-    // hand.add(deck.draw());
-    // }
-    // }
-
     public void playCard(Card card, Game game) {
         card.performAction(this, game);
         hand.remove(card);
@@ -71,7 +62,6 @@ public class Player {
 
     public void discardCard(Card card, Deck deck) {
         hand.remove(card);
-        // deck.discard(card);
         deck.discard(card);
     }
 
@@ -89,24 +79,13 @@ public class Player {
     }
 
     public boolean addCardToTable(BlueCard chosenCard) {
-        // check if the player already has a card of the same type on the table
-        // boolean hasSameCard = false;
         for (BlueCard cardOnTable : cardsOnTable) {
             if (cardOnTable.getClass().equals(chosenCard.getClass())) {
-                // hasSameCard = true;
-                // break;
                 return false;
             }
         }
-
-        // if the player doesn't have the same card on the table, add the card to the
-        // player s table
-        // if (!hasSameCard) {
         cardsOnTable.add(chosenCard);
         return true;
-        // } else {
-        // System.out.println("You cannot have two of the same card on the table.");
-        // }
     }
 
     public boolean removeCardFromTable(Card cardToRemove) {
@@ -153,8 +132,6 @@ public class Player {
         if (hand.isEmpty()) {
             return null;
         }
-
-        // randomly select a card from the player s hand
         int randomIndex = random.nextInt(hand.size());
         Card selectedCard = hand.get(randomIndex);
 
@@ -167,12 +144,8 @@ public class Player {
         if (cardsOnTable.isEmpty()) {
             return null;
         }
-
-        // randomly select a card from the player s table
         int randomIndex = random.nextInt(cardsOnTable.size());
         Card selectedCard = cardsOnTable.get(randomIndex);
-
-        // remove the selected card from the player s table
         cardsOnTable.remove(randomIndex);
 
         return selectedCard;
@@ -182,7 +155,7 @@ public class Player {
         while (hand.size() > lives) {
             int randomCardIndex = random.nextInt(hand.size());
             Card discardedCard = hand.remove(randomCardIndex);
-            deck.discard(discardedCard); // remove static
+            deck.discard(discardedCard);
         }
     }
 }
