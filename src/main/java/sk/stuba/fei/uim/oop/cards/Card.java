@@ -21,7 +21,7 @@ public abstract class Card {
     }
 
     // Abstract method to be implemented in each specific card class
-    public abstract void performAction(Player currentPlayer, Game game);
+    public abstract boolean performAction(Player currentPlayer, Game game);
 
     @Override
     public String toString() {

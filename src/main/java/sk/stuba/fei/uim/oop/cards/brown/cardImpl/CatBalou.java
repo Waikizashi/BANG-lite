@@ -1,6 +1,5 @@
 package sk.stuba.fei.uim.oop.cards.brown.cardImpl;
 
-import sk.stuba.fei.uim.oop.cards.Card;
 import sk.stuba.fei.uim.oop.cards.blue.BlueCard;
 import sk.stuba.fei.uim.oop.cards.brown.BrownCard;
 import sk.stuba.fei.uim.oop.game.Game;
@@ -15,17 +14,31 @@ public class CatBalou extends BrownCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
+    public boolean performAction(Player currentPlayer, Game game) {
         Player targetPlayer = game.chooseTargetPlayer(currentPlayer);
         if (targetPlayer != null) {
             if (game.chooseHandOrTable(targetPlayer)) {
-                Card discardedCard = targetPlayer.discardRandomCardFromHand();
-                System.out.println("Discarded card from the target player's hand: " + discardedCard.getName());
+                var discardedCard = targetPlayer.discardRandomCardFromHand();
+
+                if (discardedCard != null) {
+                    System.out.println("Discarded card from the target player's hand: " + discardedCard.getName());
+                    return true;
+                } else {
+                    System.out.println("No cards available in target player's hand");
+                    return false;
+                }
             } else {
-                BlueCard discardedCard = (BlueCard) targetPlayer.discardRandomCardFromTable();
-                System.out.println("Discarded card from the target player's table: "
-                        + ((discardedCard != null) ? discardedCard.getName() : "No cards available"));
+                var discardedCard = (BlueCard) targetPlayer.discardRandomCardFromTable();
+
+                if (discardedCard != null) {
+                    System.out.println("Discarded card from the target player's hand: " + discardedCard.getName());
+                    return true;
+                } else {
+                    System.out.println("No cards available on target player's table");
+                    return false;
+                }
             }
         }
+        return false;
     }
 }

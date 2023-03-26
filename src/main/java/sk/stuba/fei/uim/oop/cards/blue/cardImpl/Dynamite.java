@@ -21,7 +21,10 @@ public class Dynamite extends BlueCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
+    public boolean performAction(Player currentPlayer, Game game) {
         currentPlayer.addCardToTable(this);
+        // change adding to prevPlayer
+        // add using getPrevPlayer
+        return false;
     }
 }

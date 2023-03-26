@@ -21,7 +21,14 @@ public class Barrel extends BlueCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
-        currentPlayer.addCardToTable(this);
+    public boolean performAction(Player currentPlayer, Game game) {
+        boolean canBePlayed = currentPlayer.addCardToTable(this);
+
+        if (canBePlayed) {
+            return true;
+        } else {
+            System.out.println("You have already played this card!");
+            return false;
+        }
     }
 }

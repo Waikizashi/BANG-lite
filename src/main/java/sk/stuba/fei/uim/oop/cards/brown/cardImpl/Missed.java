@@ -13,6 +13,8 @@ public class Missed extends BrownCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
+    public boolean performAction(Player currentPlayer, Game game) {
+        System.out.println("Card could not be played, it is PASSIVE CARD!");
+        return false;
     }
 }

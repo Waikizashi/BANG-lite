@@ -45,13 +45,13 @@ public class Game {
             Player currentPlayer = players.get(currentPlayerIndex);
             System.out.println("It's " + currentPlayer.getName() + "'s turn!");
 
+            // turn start
             currentPlayer.addCardToHand(deck.draw());
             currentPlayer.addCardToHand(deck.draw());
 
             // perform actions with the cards
             boolean playerPassed = false;
             while (!playerPassed && currentPlayer.getHand().size() > 0) {
-
                 System.out.println(currentPlayer.getName() + "'s hand: ");
                 currentPlayer.getHand().stream().forEach(item -> System.out.println(item + "\n"));
                 System.out.println("Choose a card to play by index (0-" + (currentPlayer.getHand().size() - 1)
@@ -63,30 +63,55 @@ public class Game {
                     // checkup is last card is "Barrel" but it has already played
                     Card chosenCard = currentPlayer.getCardFromHand(chosenCardIndex);
                     var cardPlayed = false;
-                    currentPlayer.removeCardFromHand(chosenCardIndex);
 
                     // move before removing to check if the card was played
                     if (chosenCard instanceof BrownCard) {
-                        ((BrownCard) chosenCard).performAction(currentPlayer, this);
+                        cardPlayed = ((BrownCard) chosenCard).performAction(currentPlayer, this);
                     } else if (chosenCard instanceof BlueCard) {
-                        currentPlayer.addCardToTable((BlueCard) chosenCard);
+                        cardPlayed = ((BlueCard) chosenCard).performAction(currentPlayer, this);
+                        // currentPlayer.addCardToTable((BlueCard) chosenCard);
                     }
+
+                    if (cardPlayed) {
+                        currentPlayer.removeCardFromHand(chosenCard);
+                    }
+
                 } else {
                     playerPassed = true;
                 }
             }
 
-            currentPlayer.discardExcessCards();
+            currentPlayer.discardExcessCards(deck);
 
             // move to the next player
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         }
 
-        System.out.println("Game over!");
+        // System.out.println("GAME OVER!" + " PLAYER ::: " + players.get(0).getName() +
+        // " ::: WINS!");
+        printWinner(players.get(0));
     }
 
     public boolean isGameOver() {
         return players.size() <= 1; // add logic for removing players from this list when they have no lives
+    }
+
+    public void printWinner(Player player) {
+        int tableWidth = 50;
+
+        String gameTitle = "GAME OVER!";
+        String winnerName = player.getName();
+        String winnerLine = "Player " + winnerName + " is the winner!";
+
+        String titleSpaces = " ".repeat((tableWidth - gameTitle.length() - 2) / 2);
+        String winnerSpaces = " ".repeat((tableWidth - winnerLine.length() - 2) / 2);
+
+        System.out.println("╔" + "═".repeat(tableWidth - 2) + "╗");
+        System.out.println("║" + titleSpaces + gameTitle + titleSpaces + "║");
+        System.out.println("║" + "-".repeat(tableWidth - 2) + "║");
+        System.out.println("║" + winnerSpaces + winnerLine + winnerSpaces + "║");
+        System.out.println("╚" + "═".repeat(tableWidth - 2) + "╝");
+
     }
 
     public Card drawCard() {
@@ -95,6 +120,25 @@ public class Game {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    private Player getPreviousPlayer(Player currentPlayer) {
+        // Find the index of the current player in the players list
+        int currentIndex = players.indexOf(currentPlayer);
+
+        // If the current player is not found in the list, return null
+        if (currentIndex == -1) {
+            return null;
+        }
+
+        // Calculate the index of the previous player, wrapping around if necessary
+        int previousIndex = (currentIndex - 1 + players.size()) % players.size();
+
+        if (previousIndex < 0) {
+            previousIndex = players.size() - 1;
+        }
+        // Return the previous player
+        return players.get(previousIndex);
     }
 
     public Player chooseTargetPlayer(Player currentPlayer) {
@@ -133,7 +177,7 @@ public class Game {
 
         if (missedCard != null) {
             targetPlayer.removeCardFromHand(missedCard);
-            Deck.discard(missedCard);
+            deck.discard(missedCard);
             return true;
         }
 

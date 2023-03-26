@@ -40,7 +40,7 @@ public class Player {
             // add call a method to handle the player s death
             // game.handleDead or some return to call it
             lives = 0;
-            System.out.println("Player" + this.name + "is dead !");
+            System.out.println("Player - " + this.name + " is dead!");
         }
 
         System.out.println("Player - " + this.name + " now has: " + lives + " lives");
@@ -64,7 +64,7 @@ public class Player {
     public void discardCard(Card card, Deck deck) {
         hand.remove(card);
         // deck.discard(card);
-        Deck.discard(card);
+        deck.discard(card);
     }
 
     public boolean isAlive() {
@@ -80,23 +80,25 @@ public class Player {
         return null;
     }
 
-    public void addCardToTable(BlueCard chosenCard) {
+    public boolean addCardToTable(BlueCard chosenCard) {
         // check if the player already has a card of the same type on the table
-        boolean hasSameCard = false;
+        // boolean hasSameCard = false;
         for (BlueCard cardOnTable : cardsOnTable) {
             if (cardOnTable.getClass().equals(chosenCard.getClass())) {
-                hasSameCard = true;
-                break;
+                // hasSameCard = true;
+                // break;
+                return false;
             }
         }
 
         // if the player doesn't have the same card on the table, add the card to the
         // player s table
-        if (!hasSameCard) {
-            cardsOnTable.add(chosenCard);
-        } else {
-            System.out.println("You cannot have two of the same card on the table.");
-        }
+        // if (!hasSameCard) {
+        cardsOnTable.add(chosenCard);
+        return true;
+        // } else {
+        // System.out.println("You cannot have two of the same card on the table.");
+        // }
     }
 
     public Card findCardInHand(Class<?> cardClass) {
@@ -166,12 +168,12 @@ public class Player {
         return selectedCard;
     }
 
-    public void discardExcessCards() {
+    public void discardExcessCards(Deck deck) {
         while (hand.size() > lives) {
             Random random = new Random();
             int randomCardIndex = random.nextInt(hand.size());
             Card discardedCard = hand.remove(randomCardIndex);
-            Deck.discard(discardedCard); // remove static
+            deck.discard(discardedCard); // remove static
         }
     }
 }

@@ -20,10 +20,20 @@ public class Prison extends BlueCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
-        Player targetPlayer = game.chooseTargetPlayer(currentPlayer);
-        if (targetPlayer != null) {
-            targetPlayer.addCardToTable(this);
+    public boolean performAction(Player currentPlayer, Game game) {
+        var targetPlayer = game.chooseTargetPlayer(currentPlayer);
+
+        if (targetPlayer == null) {
+            return false;
+        }
+        boolean canBePlayed = targetPlayer.addCardToTable(this);
+
+        if (canBePlayed) {
+            return true;
+        } else {
+            System.out.println("This card cannot be applied to the player " + targetPlayer.getName());
+            return false;
         }
     }
+
 }

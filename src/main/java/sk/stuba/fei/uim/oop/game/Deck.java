@@ -17,11 +17,11 @@ import java.util.List;
 
 public class Deck {
     private List<Card> deck;
-    static private List<Card> discardPile = new ArrayList<>(); // remove static potomusto dolbojeb
+    private List<Card> discardPile; // remove static potomusto dolbojeb
 
     public Deck() {
         deck = new ArrayList<>();
-        // discardPile = new ArrayList<>();
+        discardPile = new ArrayList<>();
         initializeDeck();
         shuffle();
     }
@@ -79,7 +79,7 @@ public class Deck {
     // return null; // Deck is empty
     // }
 
-    public static void discard(Card card) { // same remove static, add object to Game
+    public void discard(Card card) { // same remove static, add object to Game
         discardPile.add(card);
     }
 }

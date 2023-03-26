@@ -13,7 +13,7 @@ public class Indians extends BrownCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
+    public boolean performAction(Player currentPlayer, Game game) {
         for (Player targetPlayer : game.getPlayers()) {
             if (!targetPlayer.equals(currentPlayer)) {
                 System.out.println("Indian attack on player: " + targetPlayer.getName());
@@ -25,5 +25,6 @@ public class Indians extends BrownCard {
                 }
             }
         }
+        return true;
     }
 }

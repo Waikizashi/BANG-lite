@@ -14,7 +14,7 @@ public class Stagecoach extends BrownCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
+    public boolean performAction(Player currentPlayer, Game game) {
         Card drawnCard1 = game.drawCard();
         Card drawnCard2 = game.drawCard();
 
@@ -22,8 +22,11 @@ public class Stagecoach extends BrownCard {
             currentPlayer.addCardToHand(drawnCard1);
             currentPlayer.addCardToHand(drawnCard2);
             System.out.println("The current player drew two cards using the Stagecoach card!");
+            // return true; //another logic of removing card
         } else {
             System.out.println("There are not enough cards left in the deck!");
+            // return false; //another logic of removing card
         }
+        return true; // another one logic of removing card
     }
 }

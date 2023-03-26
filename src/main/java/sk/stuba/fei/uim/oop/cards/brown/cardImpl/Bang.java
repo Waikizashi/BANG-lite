@@ -13,7 +13,7 @@ public class Bang extends BrownCard {
     }
 
     @Override
-    public void performAction(Player currentPlayer, Game game) {
+    public boolean performAction(Player currentPlayer, Game game) {
         Player targetPlayer = game.chooseTargetPlayer(currentPlayer);
         if (targetPlayer != null) {
             if (game.handleBarrel(targetPlayer)) {
@@ -24,6 +24,8 @@ public class Bang extends BrownCard {
                 System.out.println("The target player was hit by the Bang and lost a life!");
                 targetPlayer.reduceLife(1);
             }
+            return true;
         }
+        return false;
     }
 }
