@@ -29,8 +29,10 @@ public class Game {
     }
 
     public void startGame() {
-
         int numberOfPlayers = readInt("Enter the number of players (2-4): ");
+        while (numberOfPlayers < 2 || numberOfPlayers > 4) {
+            numberOfPlayers = readInt("allow only (2-4) players: ");
+        }
 
         for (int i = 0; i < numberOfPlayers; i++) {
             String playerName = readString("Enter the name for player " + (i + 1) + ":");
